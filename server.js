@@ -1,4 +1,13 @@
-const express = require('express');
-const app = express();
+const cluster = require('cluster');
 
-app.listen(5000, console.log('http://localhost:5000'));
+const express = require('express');
+
+console.log(cluster.isMaster);
+
+if (cluster.isMaster) {
+  cluster.fork();
+} else {
+  const app = express();
+
+  app.listen(5000, console.log('http://localhost:5000'));
+}
