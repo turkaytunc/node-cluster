@@ -1,17 +1,18 @@
-process.env.UV_THREADPOOL_SIZE = 1;
+// process.env.UV_THREADPOOL_SIZE = 1;
 const cluster = require('cluster');
 
 if (cluster.isMaster) {
+  cluster.fork();
   cluster.fork();
 } else {
   const crypto = require('crypto');
   const express = require('express');
 
   const app = express();
-
+  const start = new Date();
   app.get('/slow', (req, res) => {
-    crypto.pbkdf2('x', 'y', 100000, 512, 'sha512', () => {
-      res.json({ message: 'Hashing done' });
+    crypto.pbkdf2('x', 'y', 200000, 512, 'sha512', () => {
+      res.json({ message: 'Hashing done in ' + (new Date() - start) / 1000 });
     });
   });
 
